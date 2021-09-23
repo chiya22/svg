@@ -7,6 +7,7 @@ const fs = require('fs');
 const pdfmaker = require('pdfmake');
 // https://pdfmake.github.io/docs/0.1/
 
+
 /* GET home page. */
 router.post('/', (req, res, next) => {
 
@@ -22,8 +23,8 @@ router.post('/', (req, res, next) => {
   name_nyukyo.textContent = "入居者番号";
   case1.textContent = "請求額";
   case2.textContent = "16,500円";
-  case3.textContent = "請求額";
-  case4.textContent = "16,500円";
+  case3.textContent = "請求額（税込）";
+  case4.textContent = "13,500円";
   const svgcontent = document.querySelector("svg");
 
   // fontの指定
@@ -40,15 +41,26 @@ router.post('/', (req, res, next) => {
         svg:svgcontent.outerHTML
       }
     ],
-    // pageSize: 'A4',
+    pageSize: 'A4',
     pageMargins: [ 0, 0, 0, 0 ],
     defaultStyle: {
       font: 'NotoSansJP',
-    }
+    },
+    ownerPassword: '123456',
+    permissions: {
+      printing: false, //'lowResolution'
+      // printing: 'highResolution', //'lowResolution'
+      modifying: false,
+      copying: false,
+      annotating: false,
+      fillingForms: false,
+      contentAccessibility: false,
+      documentAssembly: false
+    },
   };
   const options = {
   }
-  
+
   const pdfDoc = printer.createPdfKitDocument(docDefinition,options);
   pdfDoc.pipe(res);
   pdfDoc.end();
@@ -59,6 +71,12 @@ router.post('/', (req, res, next) => {
   .set('Content-Type', 'application/pdf')
   .set('isBase64Encoded', true)
   .toString('base64');
+
+
+  // res.render("index", {
+  //   title: 'SVG-TEST-PDF-PROTEXT'
+  // })
+
 });
 
 router.get('/', (req, res, next) => {
